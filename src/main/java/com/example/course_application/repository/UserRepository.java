@@ -11,6 +11,6 @@ import com.example.course_application.entity.User;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
 
-    @Query("{ username: ?0 , password: ?1 }")
-    public Optional<User> findUserByUsernameAndPassword(String username, String password);
+    @Query(" { username: ?0} ")
+    public Optional<User> findByUsername(String username);
 }

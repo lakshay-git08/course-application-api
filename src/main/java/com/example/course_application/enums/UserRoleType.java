@@ -7,8 +7,17 @@ public enum UserRoleType {
 
     public final int roleType;
 
-    private UserRoleType(int roleType) {
+    UserRoleType(int roleType) {
         this.roleType = roleType;
+    }
+
+    public static UserRoleType fromRoleType(int roleType) {
+        for (UserRoleType type : values()) {
+            if (type.roleType == roleType) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("invalid role");
     }
 
 }

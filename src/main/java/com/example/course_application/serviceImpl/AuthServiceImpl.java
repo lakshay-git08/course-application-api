@@ -1,10 +1,15 @@
 package com.example.course_application.serviceImpl;
 
+import java.util.Collections;
 import java.util.Date;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.course_application.entity.User;
@@ -15,7 +20,7 @@ import com.example.course_application.repository.UserRepository;
 import com.example.course_application.service.AuthService;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -34,11 +39,18 @@ public class AuthServiceImpl implements AuthService {
         user.setUpdated_at(new Date());
         User newUser = userRepository.save(user);
         return newUser;
-    };
+    }
 
-    public Optional<User> login(String username, String password) {
-        Optional<User> userFromDB = userRepository.findUserByUsernameAndPassword(username, password);
-        return userFromDB;
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User userFromDB = userRepository.findByUsername(username).orElse(null);
+        if (userFromDB == null) {
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
+        String userRoleType = UserRoleType.fromRoleType(userFromDB.getRoleType()).name();
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(userRoleType);
+        return new org.springframework.security.core.userdetails.User(userFromDB.getUsername(),
+                userFromDB.getPassword(), Collections.singleton(grantedAuthority));
     }
 
 }
