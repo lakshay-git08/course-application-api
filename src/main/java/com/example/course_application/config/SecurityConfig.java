@@ -33,7 +33,8 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         log.info("Control inside SecurityConfig.filterChain()");
         return http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/**").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
                 .authenticationProvider(daoAuthenticationProvider())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class).build();
     }

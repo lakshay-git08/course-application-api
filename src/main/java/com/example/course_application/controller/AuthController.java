@@ -1,5 +1,6 @@
 package com.example.course_application.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +21,10 @@ import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.service.AuthService;
 import com.example.course_application.serviceImpl.AuthServiceImpl;
+import com.example.course_application.utils.JwtUtils;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -28,6 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 
     private final AppConfig appConfig;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     @Autowired
     AuthService authService;
@@ -50,22 +58,38 @@ public class AuthController {
     @PostMapping("login")
     // public ResponseEntity<ApiResponse<Optional<User>>> login(@RequestBody
     // Map<String, String> requestBody) {
-    public void login(@RequestBody Map<String, String> requestBody) {
-        log.info("Control inside AuthController.login()");
+    public ResponseEntity<ApiResponse<Map<String, String>>> login(@RequestBody Map<String, String> requestBody,
+            HttpServletResponse response) {
+        try {
 
-        String username = requestBody.get("username");
-        String password = requestBody.get("password");
+            log.info("Control inside AuthController.login()");
 
-        // 1. Authenticate User
-        var result = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        System.out.println(result);
+            String username = requestBody.get("username");
+            String password = requestBody.get("password");
 
-        // 2. Get User Details
-        UserDetails userDetails = authServiceImpl.loadUserByUsername(username);
-        System.out.println(userDetails);
+            // 1. Authenticate User
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-        // return ApiResponse.buildResponse(authService.login(username, password),
-        // HttpStatus.OK);
+            // 2. Get User Details
+            UserDetails userDetails = authServiceImpl.loadUserByUsername(username);
+            System.out.println(userDetails);
+
+            // 3. Generate JWT Token
+            String token = jwtUtils.generateToken(userDetails);
+
+            // 4. Add token to Cookie
+            Cookie cookie = new Cookie("token", token);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            // 5. Create Response
+            Map<String, String> result = new HashMap<>();
+            result.put("token", token);
+
+            return ApiResponse.buildResponse(result, HttpStatus.OK);
+        } catch (BadCredentialsException e) {
+            return ApiResponse.buildError(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
-
 }
