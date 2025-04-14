@@ -5,19 +5,23 @@ public enum UserRoleType {
     ADMIN(1),
     CREATOR(2);
 
-    public final int roleType;
+    public final int value;
 
-    UserRoleType(int roleType) {
-        this.roleType = roleType;
+    UserRoleType(int value) {
+        this.value = value;
     }
 
     public static UserRoleType fromRoleType(int roleType) {
-        for (UserRoleType type : values()) {
-            if (type.roleType == roleType) {
+        UserRoleType[] allValues = values();
+
+        // UserRoleType.ADMIN gives ADMIN.
+        // UserRoleType.ADMIN.value gives 1.
+
+        for (UserRoleType type : allValues) {
+            if (type.value == roleType) {
                 return type;
             }
         }
         throw new IllegalArgumentException("invalid role");
     }
-
 }
