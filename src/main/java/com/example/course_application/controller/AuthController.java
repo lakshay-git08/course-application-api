@@ -81,6 +81,7 @@ public class AuthController {
             Cookie cookie = new Cookie("token", token);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
+            // cookie.setMaxAge(30000);
             response.addCookie(cookie);
 
             // 5. Create Response
