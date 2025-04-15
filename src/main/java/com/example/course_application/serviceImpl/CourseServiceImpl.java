@@ -107,7 +107,7 @@ public class CourseServiceImpl implements CourseService {
         }
 
         Pageable pageable = PageRequest.of(page - 1, limit, sort);
-        List<Course> coursesFromDB = courseRepository.getAllCoursesByCreatorId(creatorId);
+        List<Course> coursesFromDB = courseRepository.getAllCoursesByCreatorId(creatorId, pageable);
         return coursesFromDB;
     }
 
