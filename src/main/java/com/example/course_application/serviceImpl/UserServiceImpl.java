@@ -40,6 +40,11 @@ public class UserServiceImpl implements UserService {
         return userFromDB;
     };
 
+    public User getUserByUsername(String username) {
+        User userFromDB = userRepository.findByUsername(username).orElse(null);
+        return userFromDB;
+    };
+
     public User updateUser(UserInput userInput, String id, Optional<User> userFromDB) {
 
         User user = userFromDB.get();

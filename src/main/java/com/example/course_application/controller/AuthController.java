@@ -9,16 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.course_application.config.AppConfig;
 import com.example.course_application.entity.ApiResponse;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.service.AuthService;
+import com.example.course_application.service.UserService;
 import com.example.course_application.serviceImpl.AuthServiceImpl;
 import com.example.course_application.utils.JwtUtils;
 
@@ -30,9 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/auth")
 @Slf4j
 public class AuthController {
-
-    private final AppConfig appConfig;
-
     @Autowired
     JwtUtils jwtUtils;
 
@@ -40,14 +36,13 @@ public class AuthController {
     AuthService authService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     AuthServiceImpl authServiceImpl;
 
     @Autowired
     AuthenticationManager authenticationManager;
-
-    AuthController(AppConfig appConfig) {
-        this.appConfig = appConfig;
-    }
 
     @PostMapping("register")
     public ResponseEntity<ApiResponse<User>> register(@RequestBody UserInput userInput) {
@@ -70,11 +65,10 @@ public class AuthController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
             // 2. Get User Details
-            UserDetails userDetails = authServiceImpl.loadUserByUsername(username);
-            System.out.println(userDetails);
+            User user = userService.getUserByUsername(username);
 
             // 3. Generate JWT Token
-            String token = jwtUtils.generateToken(userDetails);
+            String token = jwtUtils.generateToken(user);
 
             // 4. Add token to Cookie
             Cookie cookie = new Cookie("token", token);

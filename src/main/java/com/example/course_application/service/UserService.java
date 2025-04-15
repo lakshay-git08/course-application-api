@@ -12,6 +12,8 @@ public interface UserService {
 
     public Optional<User> getUserById(String id);
 
+    public User getUserByUsername(String username);
+
     public User updateUser(UserInput userInput, String id, Optional<User> userFromDB);
 
     public void deleteUser(String id);

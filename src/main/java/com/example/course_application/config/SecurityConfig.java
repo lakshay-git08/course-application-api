@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SecurityConfig {
 
     @Autowired
-    AuthServiceImpl authService;
+    AuthServiceImpl authServiceImpl;
 
     @Autowired
     AuthFilter authFilter;
@@ -51,7 +51,7 @@ public class SecurityConfig {
     DaoAuthenticationProvider daoAuthenticationProvider() {
         log.info("Control inside SecurityConfig.daoAuthenticationProvider()");
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(authService);
+        authProvider.setUserDetailsService(authServiceImpl);
         authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         return authProvider;
     }
