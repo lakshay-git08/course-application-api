@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,36 +53,33 @@ public class AuthController {
     // Map<String, String> requestBody) {
     public ResponseEntity<ApiResponse<Map<String, String>>> login(@RequestBody Map<String, String> requestBody,
             HttpServletResponse response) {
-        try {
 
-            log.info("Control inside AuthController.login()");
+        log.info("Control inside AuthController.login()");
 
-            String username = requestBody.get("username");
-            String password = requestBody.get("password");
+        String username = requestBody.get("username");
+        String password = requestBody.get("password");
 
-            // 1. Authenticate User
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        // 1. Authenticate User
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-            // 2. Get User Details
-            User user = userService.getUserByUsername(username);
+        // 2. Get User Details
+        User user = userService.getUserByUsername(username);
 
-            // 3. Generate JWT Token
-            String token = jwtUtils.generateToken(user);
+        // 3. Generate JWT Token
+        String token = jwtUtils.generateToken(user);
 
-            // 4. Add token to Cookie
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            // cookie.setMaxAge(30000);
-            response.addCookie(cookie);
+        // 4. Add token to Cookie
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        // cookie.setMaxAge(30000);
+        response.addCookie(cookie);
 
-            // 5. Create Response
-            Map<String, String> result = new HashMap<>();
-            result.put("token", token);
+        // 5. Create Response
+        Map<String, String> result = new HashMap<>();
+        result.put("token", token);
 
-            return ApiResponse.buildResponse(result, HttpStatus.OK);
-        } catch (BadCredentialsException e) {
-            return ApiResponse.buildError(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        return ApiResponse.buildResponse(result, HttpStatus.OK);
+
     }
 }

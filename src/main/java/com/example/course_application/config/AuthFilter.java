@@ -32,6 +32,7 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         log.info("Control inside AuthFilter.doFilterInternal()");
         Cookie[] cookies = request.getCookies();
         String token = null;
@@ -55,5 +56,6 @@ public class AuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+
     }
 }

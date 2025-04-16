@@ -31,7 +31,7 @@ public class CourseController {
     CourseService courseService;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STUDENT')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse<List<Course>>> getAllCourses(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int limit,
@@ -58,6 +58,7 @@ public class CourseController {
     }
 
     @PostMapping("")
+
     public ResponseEntity<ApiResponse<Course>> createCourse(@RequestBody CourseInput courseInput) {
         return ApiResponse.buildResponse(courseService.createCourse(courseInput), HttpStatus.CREATED);
     }
