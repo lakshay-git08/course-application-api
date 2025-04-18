@@ -20,12 +20,6 @@ public class GlobalExceptionHandler {
         return ApiResponse.buildError("You don't have permission to perform this action.", HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler({ AuthenticationCredentialsNotFoundException.class })
-    public ResponseEntity<ApiResponse<Map<String, String>>> handleAuthenticationException(
-            AuthenticationCredentialsNotFoundException e) {
-        return ApiResponse.buildError("You are not logged in. Please login first.", HttpStatus.UNAUTHORIZED);
-    }
-
     @ExceptionHandler({ BadCredentialsException.class })
     public ResponseEntity<ApiResponse<Map<String, String>>> handleBadCredentialsException(
             BadCredentialsException e) {
