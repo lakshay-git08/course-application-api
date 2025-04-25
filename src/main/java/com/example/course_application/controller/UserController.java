@@ -1,7 +1,6 @@
 package com.example.course_application.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,9 +57,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Optional<User>>> getUserById(@PathVariable String id) {
-        Optional<User> user = userService.getUserById(id);
-        if (!user.isPresent()) {
+    public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable String id) {
+        User user = userService.getUserById(id);
+        if (user == null) {
             return ApiResponse.buildError(ErrorMessageConstants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         return ApiResponse.buildResponse(user);
@@ -69,8 +68,8 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable String id,
             @RequestBody UserInput userInput) {
-        Optional<User> user = userService.getUserById(id);
-        if (!user.isPresent()) {
+        User user = userService.getUserById(id);
+        if (user == null) {
             return ApiResponse.buildError(ErrorMessageConstants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         return ApiResponse.buildResponse(userService.updateUser(userInput, id, user), HttpStatus.OK);

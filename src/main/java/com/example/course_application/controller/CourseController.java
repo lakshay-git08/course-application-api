@@ -31,7 +31,7 @@ public class CourseController {
     CourseService courseService;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STUDENT')")
     public ResponseEntity<ApiResponse<List<Course>>> getAllCourses(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int limit,
@@ -49,6 +49,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STUDENT')")
     public ResponseEntity<ApiResponse<Optional<Course>>> getCourseById(@PathVariable String id) {
         Optional<Course> course = courseService.getCourseById(id);
         if (!course.isPresent()) {
@@ -58,18 +59,20 @@ public class CourseController {
     }
 
     @PostMapping("")
-
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CREATOR')")
     public ResponseEntity<ApiResponse<Course>> createCourse(@RequestBody CourseInput courseInput) {
         return ApiResponse.buildResponse(courseService.createCourse(courseInput), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CREATOR')")
     public ResponseEntity<ApiResponse<Course>> updateCourse(@PathVariable String id,
             @RequestBody CourseInput courseInput) {
         return ApiResponse.buildResponse(courseService.updateCourse(id, courseInput));
     }
 
     @DeleteMapping("/{id}")
+    
     public void deleteCourse(@PathVariable String id) {
         courseService.deleteCourse(id);
     };

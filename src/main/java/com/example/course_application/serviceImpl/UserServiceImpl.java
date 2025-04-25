@@ -35,9 +35,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable).getContent();
     };
 
-    public Optional<User> getUserById(String id) {
-        Optional<User> userFromDB = userRepository.findById(id);
+    public User getUserById(String id) {
+        User userFromDB = userRepository.findById(id).orElse(null);
         return userFromDB;
+        // return null;
     };
 
     public User getUserByUsername(String username) {
@@ -45,9 +46,9 @@ public class UserServiceImpl implements UserService {
         return userFromDB;
     };
 
-    public User updateUser(UserInput userInput, String id, Optional<User> userFromDB) {
+    public User updateUser(UserInput userInput, String id, User userFromDB) {
 
-        User user = userFromDB.get();
+        User user = userFromDB;
 
         if (userInput.getName() != null) {
             user.setName(userInput.getName());
