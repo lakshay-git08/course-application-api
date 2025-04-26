@@ -37,8 +37,7 @@ public class CourseServiceImpl implements CourseService {
     };
 
     public Optional<Course> getCourseById(String id) {
-        Optional<Course> courseFromDB = courseRepository.findById(id);
-        return courseFromDB;
+       return courseRepository.findById(id);
     };
 
     public Course createCourse(CourseInput courseInput) {

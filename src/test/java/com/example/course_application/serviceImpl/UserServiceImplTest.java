@@ -1,4 +1,4 @@
-package com.example.course_application.service;
+package com.example.course_application.serviceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.example.course_application.entity.User;
+import com.example.course_application.input.UserInput;
 import com.example.course_application.repository.UserRepository;
 import com.example.course_application.serviceImpl.UserServiceImpl;
 
@@ -83,6 +84,46 @@ public class UserServiceImplTest {
             log.error("Test failed due to exception: ", e);
             fail("Exception thrown during test execution: " + e.getMessage());
         }
+    }
+
+    @Test
+    public void testUpdateUser() {
+
+        String id = "abcdefghijklmnop";
+        String existingEmail = "abc@gmail.com";
+        String updatedEmail = "xyz@gmail.com";
+
+        User existingUser = User.builder().id(id).email(existingEmail).build();
+        UserInput userInput = new UserInput();
+        userInput.setEmail(updatedEmail);
+        User updatedUser = User.builder().id(id).email(updatedEmail).build();
+
+        User anyUser = Mockito.any(User.class);
+        // Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        Mockito.when(userRepository.save(anyUser)).thenReturn(updatedUser);
+
+        User result = userServiceImpl.updateUser(userInput, id, existingUser);
+
+        assertNotNull(result);
+        assertEquals(updatedEmail, result.getEmail());
+
+        // Mockito.verify(userRepository).findById(id);
+        Mockito.verify(userRepository).save(Mockito.any(User.class));
+    }
+
+    @Test
+    public void testDeleteUser() {
+
+        String id = "abcdefghijklmnop";
+
+        User mockUser = User.builder().id(id).email("abc@gmail.com").build();
+
+        Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(mockUser));
+
+        userServiceImpl.deleteUser(id);
+
+        Mockito.verify(userRepository).findById(id);
+        Mockito.verify(userRepository).deleteById(id);
     }
 
 }

@@ -72,7 +72,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    
+
     public void deleteCourse(@PathVariable String id) {
         courseService.deleteCourse(id);
     };

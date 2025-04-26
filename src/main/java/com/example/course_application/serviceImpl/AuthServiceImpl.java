@@ -55,7 +55,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         log.info("Control inside AuthServiceImpl.loadUserByUsername()");
 
         Optional<User> userFromDB = userRepository.findByUsername(username);
-        System.out.println(userFromDB);
+        // System.out.println(userFromDB);
         if (userFromDB.isEmpty()) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
