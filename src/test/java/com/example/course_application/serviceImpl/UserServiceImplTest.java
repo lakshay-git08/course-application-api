@@ -23,7 +23,6 @@ import org.springframework.data.domain.Sort;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.repository.UserRepository;
-import com.example.course_application.serviceImpl.UserServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -103,4 +103,9 @@ public class CourseServiceImplTest {
         Mockito.verify(courseRepository).save(Mockito.any(Course.class));
     }
 
+    @Test
+    public void testUpdateCourse() {
+
+    }
+
 }
