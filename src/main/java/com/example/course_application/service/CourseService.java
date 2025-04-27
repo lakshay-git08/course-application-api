@@ -18,7 +18,7 @@ public interface CourseService {
 
     public void deleteCourse(String id);
 
-    public List<Course> getAllCoursesByCreatorId(int page, int limit, String sortBy, int sortDirection,
-            String creatorId);
+    public List<Course> getAllCoursesByCreatorId(String creatorId, int page, int limit, String sortBy,
+            int sortDirection);
 
 }

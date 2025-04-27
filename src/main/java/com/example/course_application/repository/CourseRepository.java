@@ -13,5 +13,5 @@ import com.example.course_application.entity.Course;
 public interface CourseRepository extends MongoRepository<Course, String> {
 
     @Query(" { created_by: ?0 } ")
-    public List<Course> getAllCoursesByCreatorId(String creatorId, Pageable pageable);
+    public List<Course> findAllCoursesByCreatorId(String creatorId, Pageable pageable);
 }

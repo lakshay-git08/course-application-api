@@ -90,7 +90,7 @@ public class CourseController {
         if (sortDirection != -1 && sortDirection != 1) {
             return ApiResponse.buildError(ErrorMessageConstants.INVALID_SORT_DIRECTION, HttpStatus.BAD_REQUEST);
         }
-        List<Course> result = courseService.getAllCoursesByCreatorId(page, limit, sortBy, sortDirection, creatorId);
+        List<Course> result = courseService.getAllCoursesByCreatorId(creatorId, page, limit, sortBy, sortDirection);
         return ApiResponse.buildResponse(result);
     }
 

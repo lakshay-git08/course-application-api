@@ -1,4 +1,4 @@
-package com.example.course_application.serviceImpl;
+package com.example.course_application.unitTests.serviceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.repository.UserRepository;
+import com.example.course_application.serviceImpl.UserServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 

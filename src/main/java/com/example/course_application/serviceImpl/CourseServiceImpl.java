@@ -37,7 +37,7 @@ public class CourseServiceImpl implements CourseService {
     };
 
     public Optional<Course> getCourseById(String id) {
-       return courseRepository.findById(id);
+        return courseRepository.findById(id);
     };
 
     public Course createCourse(CourseInput courseInput) {
@@ -96,8 +96,8 @@ public class CourseServiceImpl implements CourseService {
         }
     };
 
-    public List<Course> getAllCoursesByCreatorId(int page, int limit, String sortBy, int sortDirection,
-            String creatorId) {
+    public List<Course> getAllCoursesByCreatorId(String creatorId, int page, int limit, String sortBy,
+            int sortDirection) {
         Sort sort = Sort.unsorted();
         if (!sortBy.equals("")) {
             Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
@@ -106,7 +106,7 @@ public class CourseServiceImpl implements CourseService {
         }
 
         Pageable pageable = PageRequest.of(page - 1, limit, sort);
-        List<Course> coursesFromDB = courseRepository.getAllCoursesByCreatorId(creatorId, pageable);
+        List<Course> coursesFromDB = courseRepository.findAllCoursesByCreatorId(creatorId, pageable);
         return coursesFromDB;
     }
 

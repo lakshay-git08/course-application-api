@@ -26,7 +26,7 @@ public class EnrollmentController {
 
     @GetMapping("")
     public ResponseEntity<ApiResponse<List<Enrollment>>> getAllEnrollments(
-            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int limit,
             @RequestParam(defaultValue = "", required = false) String sortBy,
             @RequestParam(defaultValue = "1") int sortDirection) {

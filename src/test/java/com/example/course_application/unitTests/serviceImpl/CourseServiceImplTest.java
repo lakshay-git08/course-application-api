@@ -1,4 +1,4 @@
-package com.example.course_application.serviceImpl;
+package com.example.course_application.unitTests.serviceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import com.example.course_application.entity.Course;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.repository.CourseRepository;
+import com.example.course_application.serviceImpl.CourseServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceImplTest {
@@ -106,6 +107,68 @@ public class CourseServiceImplTest {
     @Test
     public void testUpdateCourse() {
 
+        String id = "abcdefghijklmonp";
+        String existingUrl = "url_1";
+        String updatedUrl = "url_2";
+
+        Course existingCourse = Course.builder().id(id).url(existingUrl).build();
+        CourseInput courseInput = new CourseInput();
+        courseInput.setUrl(updatedUrl);
+        Course updatedCourse = Course.builder().id(id).url(updatedUrl).build();
+
+        Course anyCourse = Mockito.any(Course.class);
+
+        Mockito.when(courseRepository.findById(id)).thenReturn(Optional.of(existingCourse));
+        Mockito.when(courseRepository.save(anyCourse)).thenReturn(updatedCourse);
+
+        Course result = courseServiceImpl.updateCourse(id, courseInput);
+
+        assertNotNull(result);
+        assertEquals(updatedUrl, result.getUrl());
+
+        Mockito.verify(courseRepository).findById(id);
+        Mockito.verify(courseRepository).save(anyCourse);
+
+    }
+
+    @Test
+    public void testDeleteCourse() {
+        String id = "abcdefghijklmnop";
+
+        Course mockCourse = Course.builder().id(id).url("url").build();
+
+        Mockito.when(courseRepository.findById(id)).thenReturn(Optional.of(mockCourse));
+
+        courseServiceImpl.deleteCourse(id);
+
+        Mockito.verify(courseRepository).findById(id);
+        Mockito.verify(courseRepository).deleteById(id);
+    }
+
+    @Test
+    public void testGetAllTCoursesByCreatorId() {
+
+        String givenCreatorId = "one";
+
+        Course course_1 = Course.builder().created_by(givenCreatorId).build();
+        Course course_2 = Course.builder().created_by(givenCreatorId).build();
+        Course course_3 = Course.builder().created_by(givenCreatorId).build();
+
+        List<Course> courseList = List.of(course_1, course_2, course_3);
+        Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
+
+        Mockito.when(courseRepository.findAllCoursesByCreatorId(givenCreatorId, pageable)).thenReturn(courseList);
+
+        List<Course> result = courseServiceImpl.getAllCoursesByCreatorId(givenCreatorId,
+                pageable.getPageNumber() + 1,
+                pageable.getPageSize(), "", 1);
+
+        assertNotNull(result, "Result should not be null");
+        assertEquals(courseList.size(), result.size(),
+                "Transaction List size should be: " + courseList.size());
+        assertEquals(givenCreatorId, result.get(0).getCreated_by());
+
+        Mockito.verify(courseRepository).findAllCoursesByCreatorId(givenCreatorId, pageable);
     }
 
 }

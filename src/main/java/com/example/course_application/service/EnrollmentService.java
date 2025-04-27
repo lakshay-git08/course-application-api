@@ -11,5 +11,5 @@ public interface EnrollmentService {
 
     public Optional<Enrollment> getEnrollmentById(String id);
 
-    public Enrollment getEnrollmentByStudentId(String studentId);
+    public List<Enrollment> getEnrollmentsByStudentId(String studentId);
 }

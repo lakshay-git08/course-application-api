@@ -36,8 +36,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return enrollmentFromDB;
     }
 
-    public Enrollment getEnrollmentByStudentId(String studentId) {
-        return enrollmentRepository.findByStudentId(studentId);
+    public List<Enrollment> getEnrollmentsByStudentId(String studentId) {
+        return enrollmentRepository.findAllByStudentId(studentId);
     }
 
 }
