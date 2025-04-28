@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.course_application.entity.ApiResponse;
+import com.example.course_application.entity.CombinedFilter;
 import com.example.course_application.entity.Course;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.service.CourseService;
@@ -33,18 +33,27 @@ public class CourseController {
     @GetMapping("")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STUDENT')")
     public ResponseEntity<ApiResponse<List<Course>>> getAllCourses(
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int limit,
-            @RequestParam(defaultValue = "", required = false) String sortBy,
-            @RequestParam(defaultValue = "1") int sortDirection) {
+            @RequestBody(required = false) @jakarta.annotation.Nullable CombinedFilter combinedFilter) {
 
-        if (limit < 0) {
+        if (combinedFilter == null) {
+            return ApiResponse.buildError("Body is required", HttpStatus.BAD_REQUEST);
+        }
+        if (combinedFilter.getLimit() < 0) {
             return ApiResponse.buildError(ErrorMessageConstants.INVALID_LIMIT, HttpStatus.BAD_REQUEST);
         }
-        if (sortDirection != -1 && sortDirection != 1) {
+
+        List<String> validSortFields = List.of("title");
+        if (combinedFilter.getSort().getField() != ""
+                && !validSortFields.contains(combinedFilter.getSort().getField())) {
+            return ApiResponse.buildError("Invalid sort field.",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if (combinedFilter.getSort().getOrder() != -1 && combinedFilter.getSort().getOrder() != 1) {
             return ApiResponse.buildError(ErrorMessageConstants.INVALID_SORT_DIRECTION, HttpStatus.BAD_REQUEST);
         }
-        List<Course> result = courseService.getAllCourses(page, limit, sortBy, sortDirection);
+
+        List<Course> result = courseService.getAllCourses(combinedFilter);
         return ApiResponse.buildResponse(result);
     }
 
@@ -79,18 +88,26 @@ public class CourseController {
 
     @GetMapping("/{creator_id}")
     public ResponseEntity<ApiResponse<List<Course>>> getAllCoursesByCreatorId(@PathVariable String creatorId,
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int limit,
-            @RequestParam(defaultValue = "", required = false) String sortBy,
-            @RequestParam(defaultValue = "1") int sortDirection) {
+            @RequestBody(required = false) @jakarta.annotation.Nullable CombinedFilter combinedFilter) {
 
-        if (limit < 0) {
+        if (combinedFilter == null) {
+            return ApiResponse.buildError("Body is required", HttpStatus.BAD_REQUEST);
+        }
+        if (combinedFilter.getLimit() < 0) {
             return ApiResponse.buildError(ErrorMessageConstants.INVALID_LIMIT, HttpStatus.BAD_REQUEST);
         }
-        if (sortDirection != -1 && sortDirection != 1) {
+
+        List<String> validSortFields = List.of("title");
+        if (combinedFilter.getSort().getField() != ""
+                && !validSortFields.contains(combinedFilter.getSort().getField())) {
+            return ApiResponse.buildError("Invalid sort field.",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if (combinedFilter.getSort().getOrder() != -1 && combinedFilter.getSort().getOrder() != 1) {
             return ApiResponse.buildError(ErrorMessageConstants.INVALID_SORT_DIRECTION, HttpStatus.BAD_REQUEST);
         }
-        List<Course> result = courseService.getAllCoursesByCreatorId(creatorId, page, limit, sortBy, sortDirection);
+        List<Course> result = courseService.getAllCoursesByCreatorId(creatorId, combinedFilter);
         return ApiResponse.buildResponse(result);
     }
 

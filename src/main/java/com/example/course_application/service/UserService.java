@@ -2,13 +2,13 @@ package com.example.course_application.service;
 
 import java.util.List;
 
-
+import com.example.course_application.entity.CombinedFilter;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 
 public interface UserService {
 
-    public List<User> getAllUsers(int page, int limit, String sortBy, int sortDirection);
+    public List<User> getAllUsers(CombinedFilter combinedFilter);
 
     public User getUserById(String id);
 

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.course_application.entity.ApiResponse;
+import com.example.course_application.entity.CombinedFilter;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.service.UserService;
@@ -31,21 +31,26 @@ public class UserController {
 
     @GetMapping("")
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers(
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int limit,
-            @RequestParam(defaultValue = "", required = false) String sortBy,
-            @RequestParam(defaultValue = "1") String sortDirection) {
+            CombinedFilter combinedFilter) {
 
-        if (limit < 0) {
+        if (combinedFilter == null) {
+            return ApiResponse.buildError("Body is required", HttpStatus.BAD_REQUEST);
+        }
+        if (combinedFilter.getLimit() < 0) {
             return ApiResponse.buildError(ErrorMessageConstants.INVALID_LIMIT, HttpStatus.BAD_REQUEST);
         }
-        int sortDirectionInt;
-        if (!sortDirection.equals("-1") && !sortDirection.equals("1")) {
-            return ApiResponse.buildError(ErrorMessageConstants.INVALID_SORT_DIRECTION, HttpStatus.BAD_REQUEST);
-        } else {
-            sortDirectionInt = Integer.parseInt(sortDirection);
+
+        List<String> validSortFields = List.of("title");
+        if (combinedFilter.getSort().getField() != ""
+                && !validSortFields.contains(combinedFilter.getSort().getField())) {
+            return ApiResponse.buildError("Invalid sort field.",
+                    HttpStatus.BAD_REQUEST);
         }
-        List<User> result = userService.getAllUsers(page, limit, sortBy, sortDirectionInt);
+
+        if (combinedFilter.getSort().getOrder() != -1 && combinedFilter.getSort().getOrder() != 1) {
+            return ApiResponse.buildError(ErrorMessageConstants.INVALID_SORT_DIRECTION, HttpStatus.BAD_REQUEST);
+        }
+        List<User> result = userService.getAllUsers(combinedFilter);
         return ApiResponse.buildResponse(result);
     }
 

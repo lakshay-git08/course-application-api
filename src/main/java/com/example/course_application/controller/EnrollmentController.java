@@ -8,11 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.course_application.entity.ApiResponse;
+import com.example.course_application.entity.CombinedFilter;
 import com.example.course_application.entity.Enrollment;
 import com.example.course_application.service.EnrollmentService;
 import com.example.course_application.utils.ErrorMessageConstants;
@@ -26,18 +27,27 @@ public class EnrollmentController {
 
     @GetMapping("")
     public ResponseEntity<ApiResponse<List<Enrollment>>> getAllEnrollments(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int limit,
-            @RequestParam(defaultValue = "", required = false) String sortBy,
-            @RequestParam(defaultValue = "1") int sortDirection) {
+            @RequestBody(required = false) @jakarta.annotation.Nullable CombinedFilter combinedFilter) {
 
-        if (limit < 0) {
+        if (combinedFilter == null) {
+            return ApiResponse.buildError("Body is required", HttpStatus.BAD_REQUEST);
+        }
+        if (combinedFilter.getLimit() < 0) {
             return ApiResponse.buildError(ErrorMessageConstants.INVALID_LIMIT, HttpStatus.BAD_REQUEST);
         }
-        if (sortDirection != -1 && sortDirection != 1) {
+
+        List<String> validSortFields = List.of("title");
+        if (combinedFilter.getSort().getField() != ""
+                && !validSortFields.contains(combinedFilter.getSort().getField())) {
+            return ApiResponse.buildError("Invalid sort field.",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if (combinedFilter.getSort().getOrder() != -1 && combinedFilter.getSort().getOrder() != 1) {
             return ApiResponse.buildError(ErrorMessageConstants.INVALID_SORT_DIRECTION, HttpStatus.BAD_REQUEST);
         }
-        List<Enrollment> result = enrollmentService.getAllEnrollments(page, limit, sortBy, sortDirection);
+
+        List<Enrollment> result = enrollmentService.getAllEnrollments(combinedFilter);
         return ApiResponse.buildResponse(result);
     }
 

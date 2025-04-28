@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import com.example.course_application.entity.CombinedFilter;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.repository.UserRepository;
@@ -23,15 +25,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     ModelMapper modelMapper;
 
-    public List<User> getAllUsers(int page, int limit, String sortBy, int sortDirection) {
+    public List<User> getAllUsers(CombinedFilter combinedFilter) {
         Sort sort = Sort.unsorted();
-        if (!sortBy.equals("")) {
-            Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
-                    : sortDirection == -1 ? Sort.Direction.DESC : null;
-            sort = direction == null ? Sort.unsorted() : Sort.by(direction, sortBy);
+        if (!combinedFilter.getSort().getField().equals("")) {
+            Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC
+                    : combinedFilter.getSort().getOrder() == -1 ? Sort.Direction.DESC : null;
+            sort = direction == null ? Sort.unsorted() : Sort.by(direction, combinedFilter.getSort().getField());
         }
+        Pageable pageable = PageRequest.of(combinedFilter.getPage() - 1, combinedFilter.getLimit(), sort);
 
-        Pageable pageable = PageRequest.of(page - 1, limit, sort);
         return userRepository.findAll(pageable).getContent();
     };
 
