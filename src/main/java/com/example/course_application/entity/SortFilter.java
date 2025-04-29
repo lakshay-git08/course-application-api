@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class SortFilter {
 
-    private String field = "";
+    public String field = "";
 
-    private int order = 1;
+    public int order = 1;
 }

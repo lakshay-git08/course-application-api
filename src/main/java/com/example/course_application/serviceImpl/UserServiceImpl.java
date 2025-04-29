@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.course_application.entity.CombinedFilter;
+import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.repository.UserRepository;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     ModelMapper modelMapper;
 
-    public List<User> getAllUsers(CombinedFilter combinedFilter) {
+    public List<User> getAllUsers(BaseFilter combinedFilter) {
         Sort sort = Sort.unsorted();
         if (!combinedFilter.getSort().getField().equals("")) {
             Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC

@@ -22,9 +22,11 @@ public class Course {
 
     private String name;
 
-    private Double price;
+    @Builder.Default
+    private Double price = 0.0;
 
-    private Double discounted_price;
+    @Builder.Default
+    private Double discounted_price = 0.0;
 
     private String duration;
 

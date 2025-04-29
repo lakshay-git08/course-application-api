@@ -1,4 +1,4 @@
-package com.example.course_application.unitTests.serviceImpl;
+package com.example.course_application.jUnitTests.serviceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,7 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Enrollment;
+import com.example.course_application.entity.SortFilter;
 import com.example.course_application.repository.EnrollmentRepository;
 import com.example.course_application.serviceImpl.EnrollmentServiceImpl;
 
@@ -48,9 +50,12 @@ public class EnrollmentServiceImplTest {
 
         Mockito.when(enrollmentRepository.findAll(pageable)).thenReturn(mockEnrollment);
 
-        List<Enrollment> result = enrollmentServiceImpl.getAllEnrollments(pageable.getPageNumber() + 1,
-                pageable.getPageSize(), "",
-                1);
+        BaseFilter combinedFilter = new BaseFilter();
+        combinedFilter.setPage(1);
+        combinedFilter.setLimit(10);
+        combinedFilter.setSort(new SortFilter());
+
+        List<Enrollment> result = enrollmentServiceImpl.getAllEnrollments(combinedFilter);
 
         assertNotNull(result, "Enrollment List should not be null");
         assertEquals(enrollmentList.size(), result.size(), "Enrollment list size should be " + enrollmentList.size());

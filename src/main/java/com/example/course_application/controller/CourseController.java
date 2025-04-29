@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.course_application.entity.ApiResponse;
-import com.example.course_application.entity.CombinedFilter;
+import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Course;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.service.CourseService;
@@ -33,7 +33,7 @@ public class CourseController {
     @GetMapping("")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STUDENT')")
     public ResponseEntity<ApiResponse<List<Course>>> getAllCourses(
-            @RequestBody(required = false) @jakarta.annotation.Nullable CombinedFilter combinedFilter) {
+            @RequestBody(required = false) @jakarta.annotation.Nullable BaseFilter combinedFilter) {
 
         if (combinedFilter == null) {
             return ApiResponse.buildError("Body is required", HttpStatus.BAD_REQUEST);
@@ -81,14 +81,14 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteCourse(@PathVariable String id) {
         courseService.deleteCourse(id);
     };
 
     @GetMapping("/{creator_id}")
     public ResponseEntity<ApiResponse<List<Course>>> getAllCoursesByCreatorId(@PathVariable String creatorId,
-            @RequestBody(required = false) @jakarta.annotation.Nullable CombinedFilter combinedFilter) {
+            @RequestBody(required = false) @jakarta.annotation.Nullable BaseFilter combinedFilter) {
 
         if (combinedFilter == null) {
             return ApiResponse.buildError("Body is required", HttpStatus.BAD_REQUEST);

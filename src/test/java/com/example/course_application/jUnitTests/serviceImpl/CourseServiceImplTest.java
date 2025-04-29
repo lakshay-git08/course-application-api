@@ -1,4 +1,4 @@
-package com.example.course_application.unitTests.serviceImpl;
+package com.example.course_application.jUnitTests.serviceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,7 +21,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Course;
+import com.example.course_application.entity.SortFilter;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.repository.CourseRepository;
 import com.example.course_application.serviceImpl.CourseServiceImpl;
@@ -51,8 +53,12 @@ public class CourseServiceImplTest {
 
         Mockito.when(courseRepository.findAll(pageable)).thenReturn(mockCourse);
 
-        List<Course> result = courseServiceImpl.getAllCourses(pageable.getPageNumber() + 1, pageable.getPageSize(), "",
-                1);
+        BaseFilter combinedFilter = new BaseFilter();
+        combinedFilter.setPage(1);
+        combinedFilter.setLimit(10);
+        combinedFilter.setSort(new SortFilter());
+
+        List<Course> result = courseServiceImpl.getAllCourses(combinedFilter);
 
         assertNotNull(result, "Course List should not be null");
         assertEquals(courseList.size(), result.size(), "Course list size should be " + courseList.size());
@@ -116,10 +122,8 @@ public class CourseServiceImplTest {
         courseInput.setUrl(updatedUrl);
         Course updatedCourse = Course.builder().id(id).url(updatedUrl).build();
 
-        Course anyCourse = Mockito.any(Course.class);
-
         Mockito.when(courseRepository.findById(id)).thenReturn(Optional.of(existingCourse));
-        Mockito.when(courseRepository.save(anyCourse)).thenReturn(updatedCourse);
+        Mockito.when(courseRepository.save(Mockito.any(Course.class))).thenReturn(updatedCourse);
 
         Course result = courseServiceImpl.updateCourse(id, courseInput);
 
@@ -127,7 +131,7 @@ public class CourseServiceImplTest {
         assertEquals(updatedUrl, result.getUrl());
 
         Mockito.verify(courseRepository).findById(id);
-        Mockito.verify(courseRepository).save(anyCourse);
+        Mockito.verify(courseRepository).save(Mockito.any(Course.class));
 
     }
 
@@ -159,9 +163,12 @@ public class CourseServiceImplTest {
 
         Mockito.when(courseRepository.findAllCoursesByCreatorId(givenCreatorId, pageable)).thenReturn(courseList);
 
-        List<Course> result = courseServiceImpl.getAllCoursesByCreatorId(givenCreatorId,
-                pageable.getPageNumber() + 1,
-                pageable.getPageSize(), "", 1);
+        BaseFilter combinedFilter = new BaseFilter();
+        combinedFilter.setPage(1);
+        combinedFilter.setLimit(10);
+        combinedFilter.setSort(new SortFilter());
+
+        List<Course> result = courseServiceImpl.getAllCoursesByCreatorId(givenCreatorId, combinedFilter);
 
         assertNotNull(result, "Result should not be null");
         assertEquals(courseList.size(), result.size(),

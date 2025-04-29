@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.course_application.entity.ApiResponse;
-import com.example.course_application.entity.CombinedFilter;
 import com.example.course_application.entity.User;
+import com.example.course_application.entity.UserFilter;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.service.UserService;
 import com.example.course_application.utils.ErrorMessageConstants;
@@ -30,8 +31,9 @@ public class UserController {
     UserService userService;
 
     @GetMapping("")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers(
-            CombinedFilter combinedFilter) {
+            UserFilter combinedFilter) {
 
         if (combinedFilter == null) {
             return ApiResponse.buildError("Body is required", HttpStatus.BAD_REQUEST);
@@ -62,6 +64,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable String id) {
         User user = userService.getUserById(id);
         if (user == null) {
@@ -71,6 +74,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable String id,
             @RequestBody UserInput userInput) {
         User user = userService.getUserById(id);
@@ -81,6 +85,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteUser(String id) {
         userService.deleteUser(id);
     };

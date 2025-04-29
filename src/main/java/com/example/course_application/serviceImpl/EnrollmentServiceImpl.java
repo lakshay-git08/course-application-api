@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.course_application.entity.CombinedFilter;
+import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Enrollment;
 import com.example.course_application.repository.EnrollmentRepository;
 import com.example.course_application.service.EnrollmentService;
@@ -20,7 +20,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Autowired
     EnrollmentRepository enrollmentRepository;
 
-    public List<Enrollment> getAllEnrollments(CombinedFilter combinedFilter) {
+    public List<Enrollment> getAllEnrollments(BaseFilter combinedFilter) {
         Sort sort = Sort.unsorted();
         if (!combinedFilter.getSort().getField().equals("")) {
             Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC

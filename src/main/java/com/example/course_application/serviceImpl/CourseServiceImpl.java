@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.course_application.entity.CombinedFilter;
+import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Course;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.repository.CourseRepository;
@@ -25,7 +25,7 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     ModelMapper modelMapper;
 
-    public List<Course> getAllCourses(CombinedFilter combinedFilter) {
+    public List<Course> getAllCourses(BaseFilter combinedFilter) {
         Sort sort = Sort.unsorted();
         if (!combinedFilter.getSort().getField().equals("")) {
             Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC
@@ -97,7 +97,7 @@ public class CourseServiceImpl implements CourseService {
         }
     };
 
-    public List<Course> getAllCoursesByCreatorId(String creatorId, CombinedFilter combinedFilter) {
+    public List<Course> getAllCoursesByCreatorId(String creatorId, BaseFilter combinedFilter) {
         Sort sort = Sort.unsorted();
         if (!combinedFilter.getSort().getField().equals("")) {
             Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC

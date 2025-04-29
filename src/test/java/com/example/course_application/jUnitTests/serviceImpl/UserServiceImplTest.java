@@ -1,4 +1,4 @@
-package com.example.course_application.unitTests.serviceImpl;
+package com.example.course_application.jUnitTests.serviceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.example.course_application.entity.BaseFilter;
+import com.example.course_application.entity.SortFilter;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.repository.UserRepository;
@@ -49,10 +51,13 @@ public class UserServiceImplTest {
 
         Mockito.when(userRepository.findAll(pageable)).thenReturn(mockPage);
 
+        BaseFilter combinedFilter = new BaseFilter();
+        combinedFilter.setPage(1);
+        combinedFilter.setLimit(10);
+        combinedFilter.setSort(new SortFilter());
+
         List<User> result = userServiceImpl.getAllUsers(
-                pageable.getPageNumber() + 1,
-                pageable.getPageSize(),
-                "", 1);
+                combinedFilter);
 
         assertNotNull(result, "User list should not be null");
         assertEquals(userList.size(), result.size(), "User list size should be " + userList.size());
