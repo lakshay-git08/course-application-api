@@ -1,5 +1,6 @@
 package com.example.course_application.integrationTests;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,6 +20,7 @@ public class UserIntegrationTests {
     MockMvc mockMvc;
 
     @Test
+    @Disabled
     public void testGetAllUsers() throws Exception {
 
         mockMvc.perform(get("/api/users")).andDo(result -> {

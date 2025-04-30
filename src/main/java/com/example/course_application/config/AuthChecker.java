@@ -15,6 +15,7 @@ import com.example.course_application.enums.UserType;
 public class AuthChecker {
 
     public boolean isLoggedIn() {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated()) {

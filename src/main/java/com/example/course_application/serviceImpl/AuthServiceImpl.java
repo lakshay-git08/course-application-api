@@ -37,6 +37,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User register(UserInput userInput) {
+        log.info("Control inside AuthServiceImpl.register()");
         User user = modelMapper.map(userInput, User.class);
         if (userInput.getType().equals(UserType.CREATOR)) {
             user.setRoleType(UserRoleType.CREATOR.value);

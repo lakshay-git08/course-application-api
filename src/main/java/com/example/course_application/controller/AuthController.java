@@ -45,7 +45,8 @@ public class AuthController {
 
     @PostMapping("register")
     public ResponseEntity<ApiResponse<User>> register(@RequestBody UserInput userInput) {
-        return ApiResponse.buildResponse(authService.register(userInput), HttpStatus.OK);
+        log.info("Control inside AuthController.register()");
+        return ApiResponse.buildResponse(authService.register(userInput), HttpStatus.CREATED);
     }
 
     @PostMapping("login")
