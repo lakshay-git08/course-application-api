@@ -5,9 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CourseFilter extends BaseFilter {
-
-    public String category = "category";
-    public String searchTerm = "";
+public class EnrollmentFilter extends BaseFilter{
 
 }
