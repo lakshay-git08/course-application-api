@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.course_application.entity.ApiResponse;
 import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Course;
+import com.example.course_application.entity.CourseFilter;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.service.CourseService;
 import com.example.course_application.utils.ErrorMessageConstants;
@@ -31,9 +32,9 @@ public class CourseController {
     CourseService courseService;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STUDENT')")
+    // @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('STUDENT')")
     public ResponseEntity<ApiResponse<List<Course>>> getAllCourses(
-            @RequestBody(required = false) @jakarta.annotation.Nullable BaseFilter combinedFilter) {
+            CourseFilter combinedFilter) {
 
         if (combinedFilter == null) {
             return ApiResponse.buildError("Body is required", HttpStatus.BAD_REQUEST);

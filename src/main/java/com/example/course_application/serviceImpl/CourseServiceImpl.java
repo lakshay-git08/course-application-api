@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Course;
+import com.example.course_application.entity.CourseFilter;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.repository.CourseRepository;
 import com.example.course_application.service.CourseService;
@@ -25,7 +26,7 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     ModelMapper modelMapper;
 
-    public List<Course> getAllCourses(BaseFilter combinedFilter) {
+    public List<Course> getAllCourses(CourseFilter combinedFilter) {
         Sort sort = Sort.unsorted();
         if (!combinedFilter.getSort().getField().equals("")) {
             Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC

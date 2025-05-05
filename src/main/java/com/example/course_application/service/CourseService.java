@@ -5,11 +5,12 @@ import java.util.Optional;
 
 import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Course;
+import com.example.course_application.entity.CourseFilter;
 import com.example.course_application.input.CourseInput;
 
 public interface CourseService {
 
-    public List<Course> getAllCourses(BaseFilter combinedFilter);
+    public List<Course> getAllCourses(CourseFilter combinedFilter);
 
     public Optional<Course> getCourseById(String id);
 
