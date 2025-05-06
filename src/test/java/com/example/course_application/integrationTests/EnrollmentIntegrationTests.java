@@ -39,4 +39,14 @@ public class EnrollmentIntegrationTests {
                 }).andExpect(status().isOk());
     }
 
+    @Test
+    public void testGetEnrollmentsByStudentId() throws Exception {
+        String studentId = "1";
+
+        mockMvc.perform(get("/api/enrollments/student/{id}", studentId).cookie(new MockCookie("token", jwtToken)))
+                .andDo(result -> {
+                    log.info("Result: {}", result.getResponse().getContentAsString());
+                }).andExpect(status().isOk());
+    }
+
 }

@@ -69,8 +69,7 @@ public class AuthFilter extends OncePerRequestFilter {
             return;
         }
         if (!authChecker.isLoggedIn()) {
-            ApiResponse<?> failResponse = ApiResponse.builder().statusCode(401)
-                    .message("You are not logged in. Please login first").build();
+            ApiResponse<?> failResponse = ApiResponse.buildError("You are not logged in. Please login first");
             String json = objectMapper.writeValueAsString(failResponse);
             response.setStatus(401);
             response.setContentType("application/json");

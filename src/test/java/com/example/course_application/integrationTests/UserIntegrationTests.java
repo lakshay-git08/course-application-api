@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockCookie;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.StatusResultMatchers;
 
 import com.example.course_application.enums.UserType;
 
@@ -25,52 +27,78 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserIntegrationTests {
 
-    private static String jwtToken = null;
-
     @Autowired
     MockMvc mockMvc;
 
-    public void loginUser(String userType) throws Exception {
+    private String loginUser(String username, String password) throws Exception {
 
-        if (jwtToken == null) {
-            // String studentUsername = "student5";
-            String adminUsername = "admin";
-            String password = "12345";
+        // String studentUsername = "student5";
+        // String adminUsername = "admin";
+        // String password = "12345";
 
-            JSONObject payload = new JSONObject();
+        JSONObject payload = new JSONObject();
 
-            payload.put("username", adminUsername);
-            payload.put("password", password);
+        payload.put("username", username);
+        payload.put("password", password);
 
-            MvcResult result = mockMvc.perform(
-                    post("/api/auth/login")
-                            .contentType("application/json")
-                            .content(payload.toString()))
-                    .andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(
+                post("/api/auth/login")
+                        .contentType("application/json")
+                        .content(payload.toString()))
+                .andExpect(status().isOk()).andReturn();
 
-            String responseStr = result.getResponse().getContentAsString();
-            JSONObject jsonResponse = new JSONObject(responseStr);
+        String responseStr = result.getResponse().getContentAsString();
+        JSONObject jsonResponse = new JSONObject(responseStr);
 
-            assertEquals(true, jsonResponse.getBoolean("success"));
-            jwtToken = jsonResponse.getJSONObject("content").getString("token");
-            assertNotNull(jwtToken);
+        assertEquals(true, jsonResponse.getBoolean("success"));
+        String token = jsonResponse.getJSONObject("content").getString("token");
+        assertNotNull(token);
+
+        return token;
+    }
+
+    private String getTokenForUserType(UserType userType) throws Exception {
+        switch (userType) {
+            case ADMIN:
+                return loginUser("admin", "12345");
+            case CREATOR:
+                return loginUser("creator1", "12345");
+            case STUDENT:
+                return loginUser("student5", "1234");
+            default:
+                throw new IllegalArgumentException("Unsupported user type");
         }
     }
 
-    @BeforeEach
-    public void setup() throws Exception {
-        loginUser(UserType.STUDENT.userType);
-    }
-
-    @Test
-    public void testGetAllUsers() throws Exception {
-        mockMvc.perform(get("/api/users").cookie(new MockCookie("token", jwtToken))).andDo(result -> {
+    public void testUsers(UserType userType, String endpoint, ResultMatcher status) throws Exception {
+        String token = getTokenForUserType(userType);
+        mockMvc.perform(get(endpoint).cookie(new MockCookie("token", token))).andDo(result -> {
             log.info("Result: {}", result.getResponse().getContentAsString());
-        }).andExpect(status().isOk());
+        }).andExpect(status);
+    }
+
+    // /api/users => admin, creator, student
+
+    // admin
+    // /api/users?page=2
+    // /api/users?limit=20
+    // /api/users?sortBy=""&sort=1
+    // /api/users?page=3&limit=15&sortBy=""&sort=1
+
+    @Test
+    public void testGetAllUsers_Admin() throws Exception {
+
+        testUsers(UserType.ADMIN, "/api/users", status().isOk());
     }
 
     @Test
-    public void testGetUserById() throws Exception {
+    public void testGetAllUsers_Student() throws Exception {
+
+        testUsers(UserType.STUDENT, "/api/users", status().isUnauthorized());
+    }
+
+    @Test
+    public void testGetUserById_Admin() throws Exception {
         String userId = "68025caa77b1f241fb5b38cf";
 
         mockMvc.perform(get("/api/users/{id}", userId).cookie(new MockCookie("token", jwtToken))).andDo(result -> {
@@ -96,12 +124,12 @@ public class UserIntegrationTests {
 
     @Test
     public void testDeleteUser() throws Exception {
-        String userId = "68025caa77b1f241fb5b38cf"; 
-    
+        String userId = "68025caa77b1f241fb5b38cf";
+
         mockMvc.perform(delete("/api/users/{id}", userId)
                 .cookie(new MockCookie("token", jwtToken)))
                 .andDo(result -> log.info("Delete User Result: {}", result.getResponse().getContentAsString()))
                 .andExpect(status().isBadRequest());
     }
-    
+
 }

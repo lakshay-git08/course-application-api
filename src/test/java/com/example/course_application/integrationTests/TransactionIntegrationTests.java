@@ -39,4 +39,25 @@ public class TransactionIntegrationTests {
                 }).andExpect(status().isOk());
     }
 
+    @Test
+    public void testGetAllTransactionsByCourseId() throws Exception {
+        String courseId = "1";
+
+        mockMvc.perform(get("/api/transactions/{id}", courseId)
+                .cookie(new MockCookie("token", jwtToken)))
+                .andDo(result -> {
+                    log.info("Result: {}", result.getResponse().getContentAsString());
+                }).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetTransactionsByStudentId() throws Exception {
+        String studentId = "1";
+
+        mockMvc.perform(get("/api/transactions/{id}", studentId)
+                .cookie(new MockCookie("token", jwtToken)))
+                .andDo(result -> {
+                    log.info("Result: {}", result.getResponse().getContentAsString());
+                }).andExpect(status().isOk());
+    }
 }

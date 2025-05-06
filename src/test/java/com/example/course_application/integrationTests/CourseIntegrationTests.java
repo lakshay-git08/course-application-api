@@ -67,4 +67,13 @@ public class CourseIntegrationTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void testGetAllCoursesByCreatorId() throws Exception {
+        String creatorId = "68186f9af3ed5e164b44430b";
+
+        mockMvc.perform(get("/api/courses/{id}", creatorId).cookie(new MockCookie("token", jwtToken))).andDo(result -> {
+            log.info("Result: {}", result.getResponse().getContentAsString());
+        }).andExpect(status().isOk());
+    }
+
 }

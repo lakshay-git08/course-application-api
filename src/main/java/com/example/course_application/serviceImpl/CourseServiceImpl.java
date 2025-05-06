@@ -10,9 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Course;
-import com.example.course_application.entity.CourseFilter;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.repository.CourseRepository;
 import com.example.course_application.service.CourseService;
@@ -26,15 +24,16 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     ModelMapper modelMapper;
 
-    public List<Course> getAllCourses(CourseFilter combinedFilter) {
+    public List<Course> getAllCourses(int page, int limit, String sortBy, int sortDirection) {
         Sort sort = Sort.unsorted();
-        if (!combinedFilter.getSort().getField().equals("")) {
-            Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC
-                    : combinedFilter.getSort().getOrder() == -1 ? Sort.Direction.DESC : null;
-            sort = direction == null ? Sort.unsorted() : Sort.by(direction, combinedFilter.getSort().getField());
+        if (!sortBy.equals("")) {
+            Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
+                    : sortDirection == -1 ? Sort.Direction.DESC : null;
+            sort = direction == null ? Sort.unsorted() : Sort.by(direction, sortBy);
         }
 
-        Pageable pageable = PageRequest.of(combinedFilter.getPage() - 1, combinedFilter.getLimit(), sort);
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
+
         return courseRepository.findAll(pageable).getContent();
     };
 
@@ -98,14 +97,17 @@ public class CourseServiceImpl implements CourseService {
         }
     };
 
-    public List<Course> getAllCoursesByCreatorId(String creatorId, BaseFilter combinedFilter) {
+    public List<Course> getAllCoursesByCreatorId(String creatorId, int page, int limit, String sortBy,
+            int sortDirection) {
+
         Sort sort = Sort.unsorted();
-        if (!combinedFilter.getSort().getField().equals("")) {
-            Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC
-                    : combinedFilter.getSort().getOrder() == -1 ? Sort.Direction.DESC : null;
-            sort = direction == null ? Sort.unsorted() : Sort.by(direction, combinedFilter.getSort().getField());
+        if (!sortBy.equals("")) {
+            Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
+                    : sortDirection == -1 ? Sort.Direction.DESC : null;
+            sort = direction == null ? Sort.unsorted() : Sort.by(direction, sortBy);
         }
-        Pageable pageable = PageRequest.of(combinedFilter.getPage() - 1, combinedFilter.getLimit(), sort);
+
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
 
         List<Course> coursesFromDB = courseRepository.findAllCoursesByCreatorId(creatorId, pageable);
         return coursesFromDB;

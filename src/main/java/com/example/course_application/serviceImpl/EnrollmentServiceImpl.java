@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Enrollment;
 import com.example.course_application.repository.EnrollmentRepository;
 import com.example.course_application.service.EnrollmentService;
@@ -20,15 +19,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Autowired
     EnrollmentRepository enrollmentRepository;
 
-    public List<Enrollment> getAllEnrollments(BaseFilter combinedFilter) {
-        Sort sort = Sort.unsorted();
-        if (!combinedFilter.getSort().getField().equals("")) {
-            Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC
-                    : combinedFilter.getSort().getOrder() == -1 ? Sort.Direction.DESC : null;
-            sort = direction == null ? Sort.unsorted() : Sort.by(direction, combinedFilter.getSort().getField());
-        }
-        Pageable pageable = PageRequest.of(combinedFilter.getPage() - 1, combinedFilter.getLimit(), sort);
+    public List<Enrollment> getAllEnrollments(int page, int limit, String sortBy, int sortDirection) {
 
+        Sort sort = Sort.unsorted();
+        if (!sortBy.equals("")) {
+            Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
+                    : sortDirection == -1 ? Sort.Direction.DESC : null;
+            sort = direction == null ? Sort.unsorted() : Sort.by(direction, sortBy);
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
         return enrollmentRepository.findAll(pageable).getContent();
     };
 
@@ -37,8 +37,18 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return enrollmentFromDB;
     }
 
-    public List<Enrollment> getEnrollmentsByStudentId(String studentId) {
-        return enrollmentRepository.findAllByStudentId(studentId);
+    public List<Enrollment> getEnrollmentsByStudentId(String studentId, int page, int limit, String sortBy,
+            int sortDirection) {
+        Sort sort = Sort.unsorted();
+        if (!sortBy.equals("")) {
+            Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
+                    : sortDirection == -1 ? Sort.Direction.DESC : null;
+            sort = direction == null ? Sort.unsorted() : Sort.by(direction, sortBy);
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
+
+        return enrollmentRepository.findAllByStudentId(studentId, pageable);
     }
 
 }

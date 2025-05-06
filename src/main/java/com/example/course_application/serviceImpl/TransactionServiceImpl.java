@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Transaction;
 import com.example.course_application.repository.TransactionRepository;
 import com.example.course_application.service.TransactionService;
@@ -20,15 +19,15 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
 
-    public List<Transaction> getAllTransactions(BaseFilter combinedFilter) {
+    public List<Transaction> getAllTransactions(int page, int limit, String sortBy, int sortDirection) {
         Sort sort = Sort.unsorted();
-        if (!combinedFilter.getSort().getField().equals("")) {
-            Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC
-                    : combinedFilter.getSort().getOrder() == -1 ? Sort.Direction.DESC : null;
-            sort = direction == null ? Sort.unsorted() : Sort.by(direction, combinedFilter.getSort().getField());
+        if (!sortBy.equals("")) {
+            Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
+                    : sortDirection == -1 ? Sort.Direction.DESC : null;
+            sort = direction == null ? Sort.unsorted() : Sort.by(direction, sortBy);
         }
-        Pageable pageable = PageRequest.of(combinedFilter.getPage() - 1, combinedFilter.getLimit(), sort);
 
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
         return transactionRepository.findAll(pageable).getContent();
     };
 
@@ -37,28 +36,31 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionFromDB;
     }
 
-    public List<Transaction> getAllTransactionsByCourseId(String courseId, BaseFilter combinedFilter) {
+    public List<Transaction> getAllTransactionsByCourseId(String courseId, int page, int limit, String sortBy,
+            int sortDirection) {
         Sort sort = Sort.unsorted();
-        if (!combinedFilter.getSort().getField().equals("")) {
-            Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC
-                    : combinedFilter.getSort().getOrder() == -1 ? Sort.Direction.DESC : null;
-            sort = direction == null ? Sort.unsorted() : Sort.by(direction, combinedFilter.getSort().getField());
+        if (!sortBy.equals("")) {
+            Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
+                    : sortDirection == -1 ? Sort.Direction.DESC : null;
+            sort = direction == null ? Sort.unsorted() : Sort.by(direction, sortBy);
         }
-        Pageable pageable = PageRequest.of(combinedFilter.getPage() - 1, combinedFilter.getLimit(), sort);
 
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
         List<Transaction> transactionsFromDB = transactionRepository.findAllByCourseId(courseId, pageable);
         return transactionsFromDB;
     }
 
-    public List<Transaction> getAllTransactionsByStudentId(String studentId, BaseFilter combinedFilter) {
-        Sort sort = Sort.unsorted();
-        if (!combinedFilter.getSort().getField().equals("")) {
-            Sort.Direction direction = combinedFilter.getSort().getOrder() == 1 ? Sort.Direction.ASC
-                    : combinedFilter.getSort().getOrder() == -1 ? Sort.Direction.DESC : null;
-            sort = direction == null ? Sort.unsorted() : Sort.by(direction, combinedFilter.getSort().getField());
-        }
-        Pageable pageable = PageRequest.of(combinedFilter.getPage() - 1, combinedFilter.getLimit(), sort);
+    public List<Transaction> getAllTransactionsByStudentId(String studentId, int page, int limit, String sortBy,
+            int sortDirection) {
 
+        Sort sort = Sort.unsorted();
+        if (!sortBy.equals("")) {
+            Sort.Direction direction = sortDirection == 1 ? Sort.Direction.ASC
+                    : sortDirection == -1 ? Sort.Direction.DESC : null;
+            sort = direction == null ? Sort.unsorted() : Sort.by(direction, sortBy);
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
         List<Transaction> transactionsFromDB = transactionRepository.findAllByStudentId(studentId, pageable);
         return transactionsFromDB;
     }

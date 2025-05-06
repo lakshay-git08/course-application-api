@@ -11,7 +11,6 @@ public class ApiResponse<T> {
     private boolean success;
     private T content;
     private String message;
-    private Integer statusCode;
 
     public static <T> ResponseEntity<ApiResponse<T>> buildResponse(T content) {
         return buildResponse(content, null, HttpStatus.OK);
@@ -24,7 +23,7 @@ public class ApiResponse<T> {
     public static <T> ResponseEntity<ApiResponse<T>> buildResponse(T content, String message, HttpStatus status) {
         ApiResponse<T> body = ApiResponse.<T>builder().success(status.is2xxSuccessful()).content(content)
                 .message(message)
-                .statusCode(status.value()).build();
+                .build();
 
         return ResponseEntity.status(status).body(body);
     }
@@ -35,8 +34,15 @@ public class ApiResponse<T> {
                         .success(false)
                         .content(null)
                         .message(message)
-                        .statusCode(status.value())
                         .build());
+    }
+
+    public static <T> ApiResponse<T> buildError(String message) {
+        return ApiResponse.<T>builder()
+                .success(false)
+                .content(null)
+                .message(message)
+                .build();
     }
 
 }
