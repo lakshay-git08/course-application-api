@@ -23,7 +23,6 @@ import org.springframework.data.domain.Sort;
 
 import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Course;
-import com.example.course_application.entity.CourseFilter;
 import com.example.course_application.entity.SortFilter;
 import com.example.course_application.input.CourseInput;
 import com.example.course_application.repository.CourseRepository;
@@ -54,12 +53,8 @@ public class CourseServiceImplTest {
 
         Mockito.when(courseRepository.findAll(pageable)).thenReturn(mockCourse);
 
-        CourseFilter combinedFilter = new CourseFilter();
-        combinedFilter.setPage(1);
-        combinedFilter.setLimit(10);
-        combinedFilter.setSort(new SortFilter());
-
-        List<Course> result = courseServiceImpl.getAllCourses(combinedFilter);
+        List<Course> result = courseServiceImpl.getAllCourses(pageable.getPageNumber() + 1, pageable.getPageSize(), "",
+                1);
 
         assertNotNull(result, "Course List should not be null");
         assertEquals(courseList.size(), result.size(), "Course list size should be " + courseList.size());
@@ -169,7 +164,9 @@ public class CourseServiceImplTest {
         combinedFilter.setLimit(10);
         combinedFilter.setSort(new SortFilter());
 
-        List<Course> result = courseServiceImpl.getAllCoursesByCreatorId(givenCreatorId, combinedFilter);
+        List<Course> result = courseServiceImpl.getAllCoursesByCreatorId(givenCreatorId, pageable.getPageNumber() + 1,
+                pageable.getPageSize(), "",
+                1);
 
         assertNotNull(result, "Result should not be null");
         assertEquals(courseList.size(), result.size(),

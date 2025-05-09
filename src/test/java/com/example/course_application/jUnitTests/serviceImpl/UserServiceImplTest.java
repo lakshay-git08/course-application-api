@@ -20,8 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.example.course_application.entity.BaseFilter;
-import com.example.course_application.entity.SortFilter;
 import com.example.course_application.entity.User;
 import com.example.course_application.input.UserInput;
 import com.example.course_application.repository.UserRepository;
@@ -51,13 +49,9 @@ public class UserServiceImplTest {
 
         Mockito.when(userRepository.findAll(pageable)).thenReturn(mockPage);
 
-        BaseFilter combinedFilter = new BaseFilter();
-        combinedFilter.setPage(1);
-        combinedFilter.setLimit(10);
-        combinedFilter.setSort(new SortFilter());
-
         List<User> result = userServiceImpl.getAllUsers(
-                combinedFilter);
+                pageable.getPageNumber() + 1, pageable.getPageSize(), "",
+                1);
 
         assertNotNull(result, "User list should not be null");
         assertEquals(userList.size(), result.size(), "User list size should be " + userList.size());

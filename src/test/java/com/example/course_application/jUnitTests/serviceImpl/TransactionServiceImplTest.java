@@ -18,8 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.example.course_application.entity.BaseFilter;
-import com.example.course_application.entity.SortFilter;
 import com.example.course_application.entity.Transaction;
 import com.example.course_application.repository.TransactionRepository;
 import com.example.course_application.serviceImpl.TransactionServiceImpl;
@@ -48,12 +46,9 @@ public class TransactionServiceImplTest {
 
                 Mockito.when(transactionRepository.findAll(pageable)).thenReturn(mockTransaction);
 
-                BaseFilter combinedFilter = new BaseFilter();
-                combinedFilter.setPage(1);
-                combinedFilter.setLimit(10);
-                combinedFilter.setSort(new SortFilter());
-
-                List<Transaction> result = transactionServiceImpl.getAllTransactions(combinedFilter);
+                List<Transaction> result = transactionServiceImpl.getAllTransactions(pageable.getPageNumber() + 1,
+                                pageable.getPageSize(), "",
+                                1);
 
                 assertNotNull(result, "Result should not be null.");
                 assertEquals(transactionList.size(), result.size(),
@@ -97,13 +92,9 @@ public class TransactionServiceImplTest {
                 Mockito.when(transactionRepository.findAllByCourseId(givenCourseId, pageable))
                                 .thenReturn(transactionList);
 
-                BaseFilter combinedFilter = new BaseFilter();
-                combinedFilter.setPage(1);
-                combinedFilter.setLimit(10);
-                combinedFilter.setSort(new SortFilter());
-
                 List<Transaction> result = transactionServiceImpl.getAllTransactionsByCourseId(givenCourseId,
-                                combinedFilter);
+                                pageable.getPageNumber() + 1, pageable.getPageSize(), "",
+                                1);
 
                 assertNotNull(result, "Result should not be null");
                 assertEquals(transactionList.size(), result.size(),
@@ -127,13 +118,10 @@ public class TransactionServiceImplTest {
 
                 Mockito.when(transactionRepository.findAllByStudentId(givenStudentId, pageable))
                                 .thenReturn(transactionList);
-                BaseFilter combinedFilter = new BaseFilter();
-                combinedFilter.setPage(1);
-                combinedFilter.setLimit(10);
-                combinedFilter.setSort(new SortFilter());
 
                 List<Transaction> result = transactionServiceImpl.getAllTransactionsByStudentId(givenStudentId,
-                                combinedFilter);
+                pageable.getPageNumber() + 1, pageable.getPageSize(), "",
+                1);
 
                 assertNotNull(result, "Result should not be null");
                 assertEquals(transactionList.size(), result.size(),

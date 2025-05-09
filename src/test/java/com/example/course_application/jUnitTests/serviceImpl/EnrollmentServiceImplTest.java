@@ -20,9 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.example.course_application.entity.BaseFilter;
 import com.example.course_application.entity.Enrollment;
-import com.example.course_application.entity.SortFilter;
 import com.example.course_application.repository.EnrollmentRepository;
 import com.example.course_application.serviceImpl.EnrollmentServiceImpl;
 
@@ -50,12 +48,8 @@ public class EnrollmentServiceImplTest {
 
         Mockito.when(enrollmentRepository.findAll(pageable)).thenReturn(mockEnrollment);
 
-        BaseFilter combinedFilter = new BaseFilter();
-        combinedFilter.setPage(1);
-        combinedFilter.setLimit(10);
-        combinedFilter.setSort(new SortFilter());
-
-        List<Enrollment> result = enrollmentServiceImpl.getAllEnrollments(combinedFilter);
+        List<Enrollment> result = enrollmentServiceImpl.getAllEnrollments(pageable.getPageNumber() + 1, pageable.getPageSize(), "",
+        1);
 
         assertNotNull(result, "Enrollment List should not be null");
         assertEquals(enrollmentList.size(), result.size(), "Enrollment list size should be " + enrollmentList.size());
