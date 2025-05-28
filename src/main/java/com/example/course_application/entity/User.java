@@ -42,4 +42,6 @@ public class User {
 
     private Date updated_at;
 
+    private Boolean deleted;
+
 }

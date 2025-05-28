@@ -29,4 +29,6 @@ public class Transaction {
 
     private Integer status;
 
+    private Boolean deleted;
+
 }

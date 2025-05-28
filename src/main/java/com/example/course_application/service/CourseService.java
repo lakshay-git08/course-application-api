@@ -16,7 +16,7 @@ public interface CourseService {
 
     public Course updateCourse(String id, CourseInput courseInput);
 
-    public void deleteCourse(String id);
+    public Boolean deleteCourse(String id);
 
     public List<Course> getAllCoursesByCreatorId(String creatorId, int page, int limit, String sortBy,
             int sortDirection);

@@ -43,6 +43,7 @@ public class CourseServiceImpl implements CourseService {
 
     public Course createCourse(CourseInput courseInput) {
         Course course = modelMapper.map(courseInput, Course.class);
+        course.setDeleted(false);
         Course newCourse = courseRepository.save(course);
         return newCourse;
     };
@@ -90,11 +91,14 @@ public class CourseServiceImpl implements CourseService {
         return null;
     };
 
-    public void deleteCourse(String id) {
-        Optional<Course> courseFromDB = courseRepository.findById(id);
-        if (courseFromDB.isPresent()) {
-            courseRepository.deleteById(id);
+    public Boolean deleteCourse(String id) {
+        Course courseFromDB = courseRepository.findById(id).orElse(null);
+        if (courseFromDB != null) {
+            courseFromDB.setDeleted(true);
+            courseRepository.save(courseFromDB);
+            return true;
         }
+        return false;
     };
 
     public List<Course> getAllCoursesByCreatorId(String creatorId, int page, int limit, String sortBy,

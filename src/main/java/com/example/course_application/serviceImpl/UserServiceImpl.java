@@ -1,7 +1,6 @@
 package com.example.course_application.serviceImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     ModelMapper modelMapper;
 
+    @Override
     public List<User> getAllUsers(int page, int limit, String sortBy, int sortDirection) {
         Sort sort = Sort.unsorted();
         if (!sortBy.equals("")) {
@@ -36,17 +36,20 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable).getContent();
     };
 
+    @Override
     public User getUserById(String id) {
         User userFromDB = userRepository.findById(id).orElse(null);
         return userFromDB;
         // return null;
     };
 
+    @Override
     public User getUserByUsername(String username) {
         User userFromDB = userRepository.findByUsername(username).orElse(null);
         return userFromDB;
     };
 
+    @Override
     public User updateUser(UserInput userInput, String id, User userFromDB) {
 
         User user = userFromDB;
@@ -72,11 +75,15 @@ public class UserServiceImpl implements UserService {
 
     };
 
-    public void deleteUser(String id) {
-        Optional<User> userFromDB = userRepository.findById(id);
-        if (userFromDB.isPresent()) {
-            userRepository.deleteById(id);
+    @Override
+    public Boolean deleteUser(String id) {
+        User userFromDB = userRepository.findById(id).orElse(null);
+        if (userFromDB != null) {
+            userFromDB.setDeleted(true);
+            userRepository.save(userFromDB);
+            return true;
         }
+        return false;
     };
 
 }

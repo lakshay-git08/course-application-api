@@ -19,6 +19,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
 
+    @Override
     public List<Transaction> getAllTransactions(int page, int limit, String sortBy, int sortDirection) {
         Sort sort = Sort.unsorted();
         if (!sortBy.equals("")) {
@@ -31,11 +32,13 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findAll(pageable).getContent();
     };
 
+    @Override
     public Optional<Transaction> getTransactionById(String id) {
         Optional<Transaction> transactionFromDB = transactionRepository.findById(id);
         return transactionFromDB;
     }
 
+    @Override
     public List<Transaction> getAllTransactionsByCourseId(String courseId, int page, int limit, String sortBy,
             int sortDirection) {
         Sort sort = Sort.unsorted();
@@ -50,6 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionsFromDB;
     }
 
+    @Override
     public List<Transaction> getAllTransactionsByStudentId(String studentId, int page, int limit, String sortBy,
             int sortDirection) {
 

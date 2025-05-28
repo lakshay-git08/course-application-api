@@ -8,4 +8,5 @@ public class SortFilter {
     public String field = "";
 
     public int order = 1;
+
 }

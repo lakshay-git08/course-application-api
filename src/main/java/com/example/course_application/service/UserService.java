@@ -15,5 +15,5 @@ public interface UserService {
 
     public User updateUser(UserInput userInput, String id, User userFromDB);
 
-    public void deleteUser(String id);
+    public Boolean deleteUser(String id);
 }

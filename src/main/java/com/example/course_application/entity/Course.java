@@ -54,4 +54,6 @@ public class Course {
 
     private Date updated_at;
 
+    private Boolean deleted;
+
 }

@@ -41,11 +41,14 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         User user = modelMapper.map(userInput, User.class);
         if (userInput.getType().equals(UserType.CREATOR)) {
             user.setRoleType(UserRoleType.CREATOR.value);
+        } else if (userInput.getType().equals(UserType.ADMIN)) {
+            user.setRoleType(UserRoleType.ADMIN.value);
         } else {
             user.setRoleType(UserRoleType.STUDENT.value);
         }
         user.setCreated_at(new Date());
         user.setUpdated_at(new Date());
+        user.setDeleted(false);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         User newUser = userRepository.save(user);
         return newUser;

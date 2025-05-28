@@ -30,4 +30,6 @@ public class Enrollment {
 
     private Date subscription_ends_at;
 
+    private Boolean deleted;
+
 }
