@@ -24,12 +24,12 @@ public class AuthChecker {
 
         // Get all valid roles from the UserRole enum
         Set<String> validRoles = Arrays.stream(UserType.values())
-                .map(Enum::name)
+                .map(Enum::name) // Converts String to Enum type by calling name() method
                 .collect(Collectors.toSet());
 
         // Check if the user has any of those roles
         return auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .anyMatch(validRoles::contains);
+                .anyMatch(validRoles::contains); // It checks User role with valid roles
     }
 }

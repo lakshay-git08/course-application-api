@@ -51,7 +51,7 @@ public class SecurityConfig {
     DaoAuthenticationProvider daoAuthenticationProvider() {
         log.info("Control inside SecurityConfig.daoAuthenticationProvider()");
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(authServiceImpl);
+        authProvider.setUserDetailsService(authServiceImpl); // gives the class which consists loadUserByUsername() method
         authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         return authProvider;
     }

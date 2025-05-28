@@ -42,6 +42,13 @@ public class AuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         log.info("Control inside AuthFilter.doFilterInternal()");
+
+        String path = request.getRequestURI();
+        if (path.startsWith("/api/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         Cookie[] cookies = request.getCookies();
         String token = null;
         if (cookies != null) {
@@ -63,11 +70,6 @@ public class AuthFilter extends OncePerRequestFilter {
             }
         }
 
-        String path = request.getRequestURI();
-        if (path.startsWith("/api/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         if (!authChecker.isLoggedIn()) {
             ApiResponse<?> failResponse = ApiResponse.buildError("You are not logged in. Please login first");
             String json = objectMapper.writeValueAsString(failResponse);
@@ -77,6 +79,5 @@ public class AuthFilter extends OncePerRequestFilter {
             return;
         }
         filterChain.doFilter(request, response);
-
     }
 }

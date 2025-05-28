@@ -63,8 +63,8 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
         String userRoleType = UserRoleType.fromRoleType(userFromDB.get().getRoleType()).name();
 
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(userRoleType);
-
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(userRoleType); // it matches the given string at
+                                                                                      // the time of preAuthorize
         return new org.springframework.security.core.userdetails.User(userFromDB.get().getUsername(),
                 userFromDB.get().getPassword(), Collections.singleton(grantedAuthority));
     }
